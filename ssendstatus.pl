@@ -71,6 +71,7 @@ sub directStatus
  my %conf = %{$conf};
  my $mname = `hostname`;
  chomp $mname;
+ $mname = $mname . "-asic";
 
 my $ispriv = &CGMinerIsPriv; 
  if ($ispriv eq "S") {
