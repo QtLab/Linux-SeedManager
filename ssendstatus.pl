@@ -19,6 +19,7 @@ sub bcastStatus
 
  my $mname = `hostname`;
  chomp $mname;
+ $mname = $mname . "-asic";
 
  my $ispriv = &CGMinerIsPriv; 
  if ($ispriv eq "S") {
