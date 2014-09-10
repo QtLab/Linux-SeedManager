@@ -50,7 +50,7 @@ if (defined $apooln) {
     &addPool($apooln, $apoolu, $apoolp);
     &saveConfig();
     $apooln = ""; $apoolu = ""; $apoolp = "";
-  } 
+  }
 }
 my $dpool = $in{'delpool'};
 if (defined $dpool) {
@@ -60,31 +60,31 @@ if (defined $dpool) {
 }
 
 my $mstop = $in{'mstop'};
-if (defined $mstop) { 
+if (defined $mstop) {
 	&stopCGMiner();
-  $mstop = ""; 
+  $mstop = "";
 }
 
 my $mstart = $in{'mstart'};
-if (defined $mstart) { 
+if (defined $mstart) {
   `sudo /opt/ifmi/smcontrol start`;
-  $mstart = ""; 
+  $mstart = "";
 }
 my $restart = $in{'startnm'};
 if (defined $restart) {
-	&stopCGMiner(); 
+	&stopCGMiner();
 	my $snmc = $in{'startnm'};
 	${$conf}{settings}{current_mconf} = $snmc;
-	DumpFile($conffile, $conf); 
+	DumpFile($conffile, $conf);
 	$snmc = "";
 	sleep 3;
 	`sudo /opt/ifmi/smcontrol start`;
 }
 
 my $reboot = $in{'reboot'};
-if (defined $reboot) { 
+if (defined $reboot) {
   `sudo /opt/ifmi/smcontrol boot`;
-}  
+}
 
 my $qval = $in{'qval'};
 if (defined $qval) {
@@ -117,19 +117,19 @@ if (defined $npalias) {
 			$acount++;
 		}
 	}
-	if ($acount == 0) {	
+	if ($acount == 0) {
 		my $newa = (keys %{$conf{pools}}); $newa++;
 		${$conf}{pools}{$newa}{alias} = $npalias;
 		${$conf}{pools}{$newa}{url} = $paurl;
 	}
-	DumpFile($conffile, $conf); 
+	DumpFile($conffile, $conf);
 	$npalias = ""; $paurl = "";
-}	
+}
 
 my $ncmc = $in{'setmconf'};
 if (defined $ncmc) {
 	${$conf}{settings}{current_mconf} = $ncmc;
-	DumpFile($conffile, $conf); 
+	DumpFile($conffile, $conf);
 	$ncmc = "";
 }
 
@@ -137,7 +137,7 @@ my $npn = $in{'pnotify'};
 if (defined $npn) {
 	my $poolnum = $in{'poolnum'};
 	${$conf}{pools}{$poolnum}{pnotify} = $npn;
-	DumpFile($conffile, $conf); 
+	DumpFile($conffile, $conf);
 	$npn = "";
 }
 
@@ -145,11 +145,11 @@ my $prl = $in{'pnotifyl'};
 if ((defined $prl) && ($prl ne "")) {
 	my $poolnum = $in{'poolnum'};
 	${$conf}{pools}{$poolnum}{pool_reject_hi} = $prl;
-	DumpFile($conffile, $conf); 
+	DumpFile($conffile, $conf);
 	$prl = "";
 }
 
-my $rpri = $in{'rpri'}; 
+my $rpri = $in{'rpri'};
 	if (defined $rpri) {
 	&setPoolSuperPri($rpri);
 }
@@ -158,9 +158,9 @@ my $rpri = $in{'rpri'};
 my $miner_name = `hostname`;
 chomp $miner_name;
 my $iptxt;
-my $nicget = `/sbin/ifconfig`; 
+my $nicget = `/sbin/ifconfig`;
   while ($nicget =~ m/(\w\w\w?\w?\d)\s.+\n\s+inet addr:(\d+\.\d+\.\d+\.\d+)\s/g) {
-  $iptxt = $2; 
+  $iptxt = $2;
 }
 
 my $q=CGI->new();
@@ -200,32 +200,32 @@ if ($showminer > -1)
 print header;
 if ($url eq "?")
 {
-	print start_html( -title=>'SM - ' . $miner_name . ' - Status', 
-		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},  
-		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30'})  
+	print start_html( -title=>'SM - ' . $miner_name . ' - Status',
+		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},
+		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30'})
 		);
 }
 else
 {
 	$url .= "tok=1";
-	print start_html( -title=>'SM - ' . $miner_name . ' - Status', 
-		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},  
-		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30; url=' . $url })  
+	print start_html( -title=>'SM - ' . $miner_name . ' - Status',
+		-style=>{-src=>'/IFMI/themes/' . $conf{display}{status_css}},
+		-head=>$q->meta({-http_equiv=>'REFRESH',-content=>'30; url=' . $url })
 	  );
 }
 
 # pull info
 my $version = &getCGMinerVersion;
-my $ispriv = &CGMinerIsPriv; 
+my $ispriv = &CGMinerIsPriv;
 my @ascs = &getFreshASCData(1);
 my @pools = &getCGMinerPools(1);
 my @summary = &getCGMinerSummary;
-my @mconfig = &getCGMinerConfig; 
+my @mconfig = &getCGMinerConfig;
 my $UHOH = "false";
-$UHOH = "true" if (!(@pools) && !(@summary) && !(@ascs)); 
+$UHOH = "true" if (!(@pools) && !(@summary) && !(@ascs));
 
 # do ASCs
-my $aput; my $a1put; my $asput; my $agimg; 
+my $aput; my $a1put; my $asput; my $agimg;
 my @nodemsg; my @ascmsg;
 my $problems = 0;
 my $okascs = 0;
@@ -238,7 +238,7 @@ if (@ascs) {
 	$a1put .= "<TD class='header'>Pool</TD>";
 	$a1put .= "<TD class='header' colspan=2>Accept/Reject</TD>";
 	$a1put .= "<TD class='header'>HW</TD>";
-	$a1put .= "<TD class='header'>Temp</TD></tr>" if (defined $ascs[0]{'current_temp_0_c'}); 
+	$a1put .= "<TD class='header'>Temp</TD></tr>" if (defined $ascs[0]{'current_temp_0_c'});
 #	$a1put .= "<TD class='header'>Frequency</TD>";
 #	$a1put .= "<TD class='header'>Serial ID</TD>";
 
@@ -246,7 +246,7 @@ if (@ascs) {
 	for (my $i=0;$i<@ascs;$i++) {
 	  my $aput;
 
-	  my $ghealth = $ascs[$i]{'status'}; 
+	  my $ghealth = $ascs[$i]{'status'};
 	  if ($ghealth ne "Alive") {
 			$problems++;
 			push(@nodemsg, "ASIC $i is $ghealth");
@@ -256,18 +256,18 @@ if (@ascs) {
 			}
 		}	else {
 			if ($i == $showasc) {
-				$asput .= "<tr><td>Status:</td><td>$ghealth</td>";	
-			}		
-	 	}	
+				$asput .= "<tr><td>Status:</td><td>$ghealth</td>";
+			}
+	 	}
 
 		if ($i == $showasc) {
-			if ($ascs[$i]{'enabled'} eq "Y") {  	  
+			if ($ascs[$i]{'enabled'} eq "Y") {
 		    $asput .= "<td>Enabled</td>";
 			  $asput .= "<td><form name='gdisable' method='POST'>";
 			  $asput .= "<input type='hidden' name='gdig' value='$i'>";
 			  $asput .= "<input type='submit' value='Disable'> ";
-			} else { 
-		    $asput .= "<td>Disabled</td>"; 
+			} else {
+		    $asput .= "<td>Disabled</td>";
 			  $asput .= "<td><form name='genable' method='POST'>";
 			  $asput .= "<input type='hidden' name='geng' value='$i'>";
 			  $asput .= "<input type='submit' value='Enable'> ";
@@ -275,21 +275,21 @@ if (@ascs) {
 	    $asput .= "</form></td></tr>";
 		}
 
-		my $ghashrate; 
+		my $ghashrate;
 		if ($conf{display}{usehashavg} >0) {
 			if (defined $ascs[$i]{'hashavg'}) {
 				$ghashrate = $ascs[$i]{'hashavg'};
 			} else {
-				$ghashrate = $ascs[$i]{'khashavg'}; 
+				$ghashrate = $ascs[$i]{'khashavg'};
 			}
 		} else {
 			if (defined $ascs[$i]{'hashrate'}) {
-				$ghashrate = $ascs[$i]{'hashrate'}; 
+				$ghashrate = $ascs[$i]{'hashrate'};
 				$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
 			} else {
 				$ghashrate = $ascs[$i]{'khashrate'};
 			}
-		}		
+		}
 
 		if ($ghashrate < $conf{monitoring}{monitor_hash_lo})
 		{
@@ -298,24 +298,24 @@ if (@ascs) {
 			if ($i == $showasc)
 			{
 				push(@ascmsg, "Below minimum hash rate");
-			}	
+			}
 			$aput .= "<td class='error'>";
 		}
 		else
 		{
 			$aput .= '<td>';
-		}	
+		}
 		$aput .= sprintf("%d", $ghashrate) . " Kh/s</TD>";
 
 			my $shorturl;
 	    my $poolurl = $ascs[$i]{'pool_url'};
 	    if ((defined $poolurl) && ($poolurl =~ m/.+\@(.+)/)) {
 	      $poolurl = $1;
-	    }	
+	    }
 	    if ((defined $poolurl) && ($poolurl =~ m|://(\w+-?\w+\.)?(\w+-?\w+\.\w+:\d+)|)) {
 	       $shorturl = $2;
 	    }
-	 	$shorturl = "N/A" if (! defined $shorturl); 
+	 	$shorturl = "N/A" if (! defined $shorturl);
 	    if ($i == $showasc) {
 	        $asput .= "<tr><td>Pool:</td><td colspan=3>" . $poolurl  . "</td>";
 	    }
@@ -324,10 +324,10 @@ if (@ascs) {
 
 		my $gsha = $ascs[$i]{'shares_accepted'}; $gsha = 0 if ($gsha eq "");
 		my $gshi = $ascs[$i]{'shares_invalid'}; $gshi = 0 if ($gshi eq "");
-		$aput .= '<TD>' . $gsha . " / " . $gshi . '</TD>';		
+		$aput .= '<TD>' . $gsha . " / " . $gshi . '</TD>';
 		if ($gsha > 0)
 		{
-			my $rr = $ascs[$i]{'shares_invalid'}/($ascs[$i]{'shares_accepted'} + $ascs[$i]{'shares_invalid'})*100 ;		
+			my $rr = $ascs[$i]{'shares_invalid'}/($ascs[$i]{'shares_accepted'} + $ascs[$i]{'shares_invalid'})*100 ;
 			if ($rr > ${$conf}{monitoring}{monitor_reject_hi})
 			{
 				$problems++;
@@ -337,7 +337,7 @@ if (@ascs) {
 					push(@ascmsg, "Above maximum reject rate");
 			        $asput .= "<tr><td>Total MH:</td><td>" . $ascs[$i]{'total_mh'} . "</td>";
 					$asput .= "<td>Shares A/R:</td><td class='error'>" .  $ascs[$i]{'shares_accepted'} . ' / ' . $ascs[$i]{'shares_invalid'} . ' (' . sprintf("%-2.2f%", $rr) . ")</td></tr>";
-				}			
+				}
 				$aput .= "<td class='error'>";
 			}
 			else
@@ -346,9 +346,9 @@ if (@ascs) {
 				{
 			    $asput .= "<tr><td>Total MH:</td><td>" . $ascs[$i]{'total_mh'} . "</td>";
 					$asput .= "<td>Shares A/R:</td><td>" .  $ascs[$i]{'shares_accepted'} . ' / ' . $ascs[$i]{'shares_invalid'} . ' (' . sprintf("%2.2f%%", $rr) . ")</td></tr>";
-				}			
+				}
 				$aput .= '<td>';
-			}		
+			}
 			$aput .= sprintf("%2.2f%%", $rr);
 		}
 		else
@@ -357,34 +357,34 @@ if (@ascs) {
 			{
 					$asput .= "<tr><td>Shares A/R:</td><td>" .  $ascs[$i]{'shares_accepted'} . ' / ' . $ascs[$i]{'shares_invalid'} . "</td></tr>";
 			}
-			
+
 			$aput .= '<td>N/A';
-		}	
+		}
 		$aput .= "</TD>";
-		
+
 		my $aschwe;
-	  my $ghwe = $ascs[$i]{'hardware_errors'};	
-		if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi}) { 
+	  my $ghwe = $ascs[$i]{'hardware_errors'};
+		if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi}) {
 		  $problems++;
 		  push(@nodemsg, "ASIC $i has hardware errors");
 		  if ($i == $showasc) {
 			push(@ascmsg, "Hardware errors");
 		  }
 		  $aschwe = "<td class='error'>" . $ghwe . "</td>";
-		} else { 
-		  $ghwe = "N/A" if ($ghwe eq ""); 
+		} else {
+		  $ghwe = "N/A" if ($ghwe eq "");
 		  $aschwe = "<td>" . $ghwe . "</td>";
 		}
 	    $aput .= $aschwe;
-		
+
 
 
 		if ($i == $showasc)
 		{
-	    push(@ascmsg, "ASIC $i has Hardware Errors") if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi});		
-			$asput .= "<td>HW Errors:</td>" . $aschwe . "</tr>"; 
+	    push(@ascmsg, "ASIC $i has Hardware Errors") if ($ghwe > ${$conf}{monitoring}{monitor_hardware_hi});
+			$asput .= "<td>HW Errors:</td>" . $aschwe . "</tr>";
 		}
-			
+
 		if ($i == $showasc)
 		{
 			if (defined $ascs[$i]{'current_temp_0_c'}) {
@@ -393,7 +393,7 @@ if (@ascs) {
 		}
 		if (defined $ascs[$i]{'current_temp_0_c'}) {
 		$aput .= '<td>';
-		}	
+		}
 		if (defined $ascs[$i]{'current_temp_0_c'}) {
 		$aput .= sprintf("%.1f", $ascs[$i]{'current_temp_0_c'}) . ' C</td>';
 		}
@@ -404,7 +404,7 @@ if (@ascs) {
 
 		$aput .= "</TR>";
 
-		my $ascurl = "?";	
+		my $ascurl = "?";
 		$ascurl .= "asc=$i";
 		my $ascid = $ascs[$i]{'devid'};
 		if ($problems)
@@ -423,7 +423,7 @@ if (@ascs) {
 	$a1put .= "</table>";
 }
 
-my $mstrategy; my $mfonly; my $mscant; my $mqueue; my $mexpiry; 
+my $mstrategy; my $mfonly; my $mscant; my $mqueue; my $mexpiry;
 if (@mconfig) {
 	for (my $i=0;$i<@mconfig;$i++) {
 		$mstrategy = ${$mconfig[0]}{'strategy'};
@@ -438,13 +438,13 @@ my $mcontrol;
 $mcontrol .= "<table id='mcontrol'><tr>";
 my $surl = "?"; $surl .= 'miner=$i';
 $mcontrol .= '<TD class="bigger"><A href="' . $surl . '">Miner</a></td>';
-my $mname; my $mvers; my $avers; 
+my $mname; my $mvers; my $avers;
 if ($version =~ m/(\w+?)=(\d+\.\d+\.\d+),API=(\d+\.\d+)/) {
 	$mname = $1;
-  $mvers = $2; 
-  $avers = $3; 
-} 
-my $getmlinv; my $mlinv; my $msput; my $minerate; my $mineacc; my $minerej; my $minewu; my $minehe; 
+  $mvers = $2;
+  $avers = $3;
+}
+my $getmlinv; my $mlinv; my $msput; my $minerate; my $mineacc; my $minerej; my $minewu; my $minehe;
 my $melapsed;
 if (@summary) {
   for (my $i=0;$i<@summary;$i++) {
@@ -452,7 +452,7 @@ if (@summary) {
     my $mrunt = sprintf("%d days, %02d:%02d.%02d",(gmtime $melapsed)[7,2,1,0]) if (defined $melapsed);
     my $mratem = ${$summary[$i]}{'hashrate'};
     $mratem = ${$summary[$i]}{'hashavg'} if (!defined $mratem);
-    $mratem = ${$summary[$i]}{'hashavg'} if ($conf{display}{usehashavg} >0 ); 
+    $mratem = ${$summary[$i]}{'hashavg'} if ($conf{display}{usehashavg} >0 );
     $minerate = sprintf("%.2f", $mratem) if (defined $mratem);
     $mineacc = ${$summary[$i]}{'shares_accepted'};
     $minerej = ${$summary[$i]}{'shares_invalid'};
@@ -464,7 +464,7 @@ if (@summary) {
  		my $runname = $conf{miners}{$runningm}{mconfig};
   	if ($showminer == $i) {
 	  	$msput .= "<tr><td colspan=4 class=big>Miner</td></tr>";
-	  	if (defined $mname) {	
+	  	if (defined $mname) {
 		  	$msput .= "<tr><td>Miner Version: </td><td>$mname $mvers</td>";
 		 		$msput .= "<td colspan=2>$mstrategy Mode</td></tr>";
 	 			$msput .= "<tr><td>Running Profile:  </td><td>$runname</td>";
@@ -473,11 +473,11 @@ if (@summary) {
 		 	}
 	 		$msput .= "<tr><td>Loaded Profile:  </td><td>$currname</td>";
 			$msput .= "<td colspan=2><form name=currentm method=post><select name=setmconf>";
-			for (keys %{$conf{miners}}) {
+			for (sort { $a <=> $b } keys %{$conf{miners}}) {
   			my $mname = $conf{miners}{$_}{mconfig};
   				if ($currentm eq $_) {
     				$msput .= "<option value=$_ selected>$mname</option>";
-	  			} else { 
+	  			} else {
   	  			$msput .= "<option value=$_>$mname</option>";
   				}
 				}
@@ -488,19 +488,19 @@ if (@summary) {
 			$msput .= "<tr><td>Loaded Config:  </td><td colspan=3>";
 	    $msput .= "<a href='/cgi-bin/sconfedit.pl' target='_blank'>";
 			$msput .= "$currconf</a></td></tr>";
-			$mrunt = "Stopped" if (!defined $mrunt); 
+			$mrunt = "Stopped" if (!defined $mrunt);
 	    $msput .= "<tr><td>Run time:</td><td>" . $mrunt . "</td>";
-			if (defined $melapsed) {  	  
+			if (defined $melapsed) {
 			  $msput .= "<td  colspan=2><form name='mstop' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > ";
-			} else { 
+			} else {
 			  $msput .= "<td  colspan=2><form name='mstart' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > ";
 			}
 			$msput .= "</form></tr>";
 			$msput .= "</table><table>";
-			if (defined $melapsed) {  	  
+			if (defined $melapsed) {
 				$msput .= "<tr><td colspan=4>Stats</td><tr>";
 				my $mtm = ${$summary[$i]}{'total_mh'};
-				my $minetm = sprintf("%.2f", $mtm); 
+				my $minetm = sprintf("%.2f", $mtm);
 		    $msput .= "<tr><td>Total MH:</td><td>" . $minetm . "</td>";
 				my $minefb = ${$summary[$i]}{'found_blocks'};
 				$minefb = 0 if (!defined $minefb);
@@ -549,8 +549,8 @@ if (@summary) {
 			$msput .= "<tr><td colspan=4><hr></td></tr>";
  			$msput .= "<tr><td class=big><a href='sconfig.pl'>SeedManager Configuration</a></td><td>";
 
-  	} else {		
-			if (defined $melapsed) { 
+  	} else {
+			if (defined $melapsed) {
 				$mcontrol .= "<td>$mname $mvers";
 		  	$mcontrol .= "<br><small>$mstrategy Mode</small></td>";
 			  $mcontrol .= "<td>Profile: $runname<br>";
@@ -558,24 +558,24 @@ if (@summary) {
 			  $mcontrol .= "<td><form name='mstop' method='POST'><input type='hidden' name='mstop' value='stop'><input type='submit' value='Stop' onclick='this.disabled=true;this.form.submit();' > </form>";
 			  $mcontrol .= "<td><small>Switch Profile</small><br>";
 				$mcontrol .= "<form name='startnm' method='post'><select name='startnm'>";
-				for (keys %{$conf{miners}}) {
+				for (sort { $a <=> $b } keys %{$conf{miners}}) {
 	  			my $mname = $conf{miners}{$_}{mconfig};
 	  				if ($currentm eq $_) {
 	    				$mcontrol .= "<option value=$_ selected>$mname</option>";
-		  			} else { 
+		  			} else {
 	  	  			$mcontrol .= "<option value=$_>$mname</option>";
 	  				}
 					}
 				$mcontrol .= "<input type='submit' value='Restart'>";
 				$mcontrol .= "</select></form></td>";
-			} else { 
+			} else {
 		  	$mcontrol .= "<td class='error'>Stopped</td>";
 			  $mcontrol .= "<td><form name=currentm method=post>Profile: <select name=setmconf>";
-				for (keys %{$conf{miners}}) {
+				for (sort { $a <=> $b } keys %{$conf{miners}}) {
   				my $mname = $conf{miners}{$_}{mconfig};
   				if ($currentm eq $_) {
     				$mcontrol .= "<option value=$_ selected>$mname</option>";
-	  			} else { 
+	  			} else {
   	  			$mcontrol .= "<option value=$_>$mname</option>";
   				}
 				}
@@ -584,12 +584,16 @@ if (@summary) {
 			  $mcontrol .= "<td><form name='mstart' method='POST'><input type='hidden' name='mstart' value='start'><input type='submit' value='Start' onclick='this.disabled=true;this.form.submit();' > </form>";
 			}
 			$mcontrol .= "</td>";
-			$mcontrol .= "<td><A href=/cgi-bin/status.pl>PoolManager</A></td>" if (-e "/usr/lib/cgi-bin/status.pl");		
+			$mcontrol .= "<td><A href=/cgi-bin/status.pl>PoolManager</A></td>" if (-e "/usr/lib/cgi-bin/status.pl");
 		}
   }
 }
-
 $mcontrol .= "</tr></table><br>";
+
+my $adata = `cat /tmp/adata`;
+my $donate = "<div align='right'><b>If you love our work, please donate!</b><br>BTC: 1BfFyiViCY18vvrhQuYwDzvYUkUsUZLhcX</div>";
+$mcontrol .= "<table><td>$adata</td><td>$donate</td></table><br>";
+
 my $p1sum; my $psum; my $psput; my @poolmsg; my $pgimg;
 $p1sum .= "<table id='pcontent'>";
 
@@ -597,27 +601,27 @@ if ($ispriv eq "S") {
 	$p1sum .= "<TR class='header'><TD class='header'>Pool</TD>";
 	$p1sum .= "<TD class='header'>Pool URL</TD>";
 	$p1sum .= "<TD class='header'>Alias</TD>";
-	$p1sum .= "<TD class='header'>Worker</TD>" if ($avers > 1.16); 
+	$p1sum .= "<TD class='header'>Worker</TD>" if ($avers > 1.16);
 	$p1sum .= "<TD class='header'>Status</TD>";
 	$p1sum .= "<TD class='header' colspan=2>Accept/Reject</TD>";
 	$p1sum .= "<TD class='header'>Active</TD>";
 	$p1sum .= "<TD class='header' colspan=2>Priority</TD>" if ($mstrategy eq "Failover");
-	$p1sum .= "<TD class='header' colspan=2>Quota (ratio or %)</TD>" if ($mstrategy eq "Load Balance"); 
+	$p1sum .= "<TD class='header' colspan=2>Quota (ratio or %)</TD>" if ($mstrategy eq "Load Balance");
 	$p1sum .= "</TR>";
  	my @currorder;
 	if (@pools) {
 	  for (my $i=0;$i<@pools;$i++) {
 			my $pimg = "<img src='/IFMI/timeout24.png'>";
-	    $pimg = "<form name='pselect' method='POST'><input type='hidden' name='swpool' value='$i'><button type='submit'>Switch</button></form>" 
+	    $pimg = "<form name='pselect' method='POST'><input type='hidden' name='swpool' value='$i'><button type='submit'>Switch</button></form>"
 	    				if ($mstrategy eq "Failover");
     	my $pname = ${$pools[$i]}{'url'};
-			my $pactive = 0; 
+			my $pactive = 0;
 			for (my $g=0;$g<@ascs;$g++) {
-				my $gurl = $ascs[$g]{'pool_url'}; 
+				my $gurl = $ascs[$g]{'pool_url'};
 				if ((defined $pname) && (defined $gurl) && ($pname eq $gurl)) {
 					$pactive++;
 				}
-			}	
+			}
 			$pimg = "<img src='/IFMI/ok24.png'>" if ($pactive >0);
 	    my $pnum = ${$pools[$i]}{'poolid'};
 	    my $pusr = ${$pools[$i]}{'user'};
@@ -625,10 +629,10 @@ if ($ispriv eq "S") {
 	    my $pstatus;
 	    if ($pstat eq "Dead") {
 	      $problems++;
-	      push(@nodemsg, "Pool $i is dead"); 
+	      push(@nodemsg, "Pool $i is dead");
 	      $pstatus = "<td class='error'>" . $pstat . "</td>";
 	      $pimg = "<img src='/IFMI/error24.png'>";
-		  	push(@poolmsg, "Pool is dead") if ($showpool == $i);	
+		  	push(@poolmsg, "Pool is dead") if ($showpool == $i);
 	    } else {
 	      $pstatus = "<td>" . $pstat . "</td>";
 	    }
@@ -638,11 +642,11 @@ if ($ispriv eq "S") {
 	    my $prr;
 	    if ($prej ne "0") {
 	       $prr = sprintf("%.2f", $prej / ($pacc + $prej)*100);
-	    } else { 
+	    } else {
 		   $prr = "0.0";
 	    }
-	    my $prat; 
-	   	my $poola; my $poolnum; my $spri; 
+	    my $prat;
+	   	my $poola; my $poolnum; my $spri;
 	    for (keys %{$conf{pools}}) {
       	if ($pname eq ${$conf}{pools}{$_}{url}) {
       		$poola = ${$conf}{pools}{$_}{alias};
@@ -650,30 +654,30 @@ if ($ispriv eq "S") {
       		$poolnum = $_;
       	}
       }
-      $poola = "n/a" if (!defined $poola); 
-      $poolnum = 0 if (!defined $poolnum); 
-      my $prhl = ${$conf}{pools}{$poolnum}{pool_reject_hi} if (defined ${$conf}{pools}{$poolnum}{pool_reject_hi}); 
+      $poola = "n/a" if (!defined $poola);
+      $poolnum = 0 if (!defined $poolnum);
+      my $prhl = ${$conf}{pools}{$poolnum}{pool_reject_hi} if (defined ${$conf}{pools}{$poolnum}{pool_reject_hi});
 			if ((defined $prhl) && ($prr > $prhl)) {
 	      $problems++;
-	      push(@nodemsg, "Pool $i reject ratio too high"); 
+	      push(@nodemsg, "Pool $i reject ratio too high");
 	  	  $prat = "<td class='error'>" . $prr . "%</td>";
-	      push(@poolmsg, "Reject ratio is too high") if ($showpool == $i); 	
-	    } else { 
+	      push(@poolmsg, "Reject ratio is too high") if ($showpool == $i);
+	    } else {
 	      $prat = "<td>" . $prr . "%</td>";
 	    }
 	    my $pquo = ${$pools[$i]}{'quota'};
-	    
-	    if ($showpool == $i) { 
-	    	my $current; 
+
+	    if ($showpool == $i) {
+	    	my $current;
 	      my $psgw = ${$pools[$i]}{'getworks'};
-	      my $psw = ${$pools[$i]}{'works'}; 
-	      my $psd = ${$pools[$i]}{'discarded'}; 
-	      my $pss = ${$pools[$i]}{'stale'}; 
-	      my $psgf = ${$pools[$i]}{'getfails'}; 
+	      my $psw = ${$pools[$i]}{'works'};
+	      my $psd = ${$pools[$i]}{'discarded'};
+	      my $pss = ${$pools[$i]}{'stale'};
+	      my $psgf = ${$pools[$i]}{'getfails'};
 	      my $psrf = ${$pools[$i]}{'remotefailures'};
 		  	if ($pactive >0) {
 					$current = "Active";
-	      } else { 
+	      } else {
 					$current = "Not Active  ";
 	      }
 	      $psput .= "<tr><form name='pdelete' method='POST'><td class='big' colspan=4>$current";
@@ -697,11 +701,11 @@ if ($ispriv eq "S") {
 		  	if ((defined $pnotify) && ($pnotify==1)) {
     	  	$psput .= "<td><input type='radio' name='pnotify' value=1 checked>Yes ";
     	  	$psput .= "<input type='radio' name='pnotify' value=0>No ";
-  		  } else { 
+  		  } else {
      	  	$psput .= "<td><input type='radio' name='pnotify' value=1>Yes ";
-    	  	$psput .= "<input type='radio' name='pnotify' value=0 checked>No "; 
+    	  	$psput .= "<input type='radio' name='pnotify' value=0 checked>No ";
   		  }
-  		  $psput .= "<input type='submit' value='Save'></td></tr></form>";	      
+  		  $psput .= "<input type='submit' value='Save'></td></tr></form>";
 	      $psput .= "<tr><td>Shares A/R:</td><td>" . $pacc . "/" . $prej . "</td>";
 	      $psput .= "<td>Reject Ratio:</td>$prat</tr>";
 	      if (!defined $prhl) {$prhl = "not set"} else {$prhl = "$prhl%"}
@@ -726,7 +730,7 @@ if ($ispriv eq "S") {
 	      $psum .= '<TR><TD class="bigger"><A href="' . $purl . '">' . $i . '</TD>';
 	      $psum .= "<td>" . $pname . "</td>";
 	      $psum .= "<td>" . $poola . "</td>";
-	      if (length($pusr) > 20) { 
+	      if (length($pusr) > 20) {
 	        $pusr = substr($pusr, 0, 6) . " ... " . substr($pusr, -6, 6) if (index($pusr, '.') < 0);
 	      }
 	      $psum .= "<td>" . $pusr . "</td>" if ($avers > 1.16);
@@ -755,7 +759,7 @@ if ($ispriv eq "S") {
 	  $psum .= "<td colspan='2'><input type='text' size='45' placeholder='MiningURL:portnumber' name='npoolurl' required>";
 	  $psum .= "</td><td colspan='2'><input type='text' placeholder='username.worker' name='npooluser' required>";
 	  $psum .= "</td><td colspan='3'><input type='text' size='15' placeholder='worker password' name='npoolpw'>";
-	  $psum .= "</td><td><input type='submit' value='Add'>"; 
+	  $psum .= "</td><td><input type='submit' value='Add'>";
 	  $psum .= "</td></form>";
 	  if ($mstrategy eq "Failover") {
 		  $psum .= "<TD class='header' colspan=2><form name='padd' method='POST'>";
@@ -763,27 +767,27 @@ if ($ispriv eq "S") {
 			for (my $i=0;$i<@pools+1;$i++) {
 				if (@pools>$i) {
 					my $pname = ${$pools[$i]}{'url'};
-	  	  	$psum .= "<option value=$pname>pool $i</option>";	  	  	
-	  	  } else { 
+	  	  	$psum .= "<option value=$pname>pool $i</option>";
+	  	  } else {
 	  	  	$psum .= "<option value='z'>off</option>";
 	  	  }
   	  }
 		  $psum .= "</select><br><small>Super Pri</small> <input type='submit' value='Set'>";
-		  $psum .= "</form></td>";	  			
+		  $psum .= "</form></td>";
 	  }
 	  if ($mstrategy eq "Load Balance") {
 		  $psum .= "<TD class='header' colspan=2>Failover-Only:<br>$mfonly</td>";
 	  }
 		$psum .= "</tr>";
 
-	} else { 
+	} else {
 	  $psum .= "<TR><TD colspan='8'><big>Active Pool Information Unavailable</big></td></tr>";
 	}
 	$psum .= "</table><br>";
 	$p1sum .= $psum;
 
-} else { 
-	if (defined $melapsed) { 
+} else {
+	if (defined $melapsed) {
 	  $p1sum .= "<TR><TD id=perror><p>The required API permissions do not appear to be available.<br>";
   	$p1sum .= "please ensure your miner.conf contains the following line:<br>";
   	$p1sum .= '"api-allow" : "W:127.0.0.1",';
@@ -802,16 +806,16 @@ print "<TD class='overviewid'>$miner_name<br><small>@ $iptxt</small></td>";
 print "<td align='right'><form method='post' name='zero'>";
 print "<input type='hidden' value='zero' name='zero' /><button type='submit' title='reset stats' class='reset-btn'/></form></td>";
 print "<tr><TD class='overviewhash' colspan=2>";
-$minerate = "0" if (!defined $minerate); 
+$minerate = "0" if (!defined $minerate);
 print $minerate . " Mh/s</TD></tr></table></td>";
-$mineacc = "0" if (!defined $mineacc); 
+$mineacc = "0" if (!defined $mineacc);
 print "<TD class='overview'>" . $mineacc . " total accepted shares<br>";
-$minerej = "0" if (!defined $minerej); 
+$minerej = "0" if (!defined $minerej);
 print $minerej . " total rejected shares<br>";
 if ($mineacc > 0)
 {
  print sprintf("%.3f%%", $minerej / ($mineacc + $minerej)*100);
-} else { 
+} else {
  print "0"
 }
 print " reject ratio";
@@ -823,20 +827,20 @@ if ($problemascs > 1){
   } else {
 	print $problemascs . " of " . @ascs . " ASICs have problems<br>";
   }
-} else { 
+} else {
   if ($okascs == 1) {
 	print $okascs . " ASIC is OK<br>";
   } else {
 	print $okascs . " of " . @ascs . " ASICs are OK<br>";
   }
 }
-$minehe = "0" if (!defined $minehe); 
+$minehe = "0" if (!defined $minehe);
 if ($minehe == 1) {
   print $minehe . " HW Error<br>";
 } else {
   print $minehe . " HW Errors<br>";
 }
-$minewu = "0" if (!defined $minewu); 
+$minewu = "0" if (!defined $minewu);
 print $minewu . " Work Utility<br>";
 print "</td>";
 
@@ -845,9 +849,9 @@ print "<TD class='overview'>";
 my $uptime = `uptime`;
 my $rigup = $1 if ($uptime =~ /up\s+(.*?),\s+\d+\s+users?,/);
 my $rigload = $1 if ($uptime =~ /average:\s+(.*?),/);
-my $memfree = `cat /proc/meminfo | grep MemFree`; 
+my $memfree = `cat /proc/meminfo | grep MemFree`;
 my $rmem = $1 if ($memfree =~ /^MemFree:\s+(.*?)\s+kB$/);
-my $rigmem = sprintf("%.3f", $rmem / 1000000);  
+my $rigmem = sprintf("%.3f", $rmem / 1000000);
 print "Uptime: $rigup<br>";
 print "CPU Load: $rigload<br>";
 print "Mem free: $rigmem GB<br>";
@@ -860,12 +864,12 @@ print "<div id=content>";
 given(my $x) {
 	when ($showasc > -1) {
 		print "<div id='showdata'>";
-		print "<table><tr colspan=2><td><A HREF=?";	
+		print "<table><tr colspan=2><td><A HREF=?";
 		print "tok=1> << Back to overview</A>";
-		print "</td></tr>";	
-		print "<tr><td class='header'>";	
-		print "<table><tr><td class='bigger'>ASIC $showasc<br>";	
-		print sprintf("%d", $ascs[$showasc]{'hashrate'}) . " Kh/s</td></tr>";	
+		print "</td></tr>";
+		print "<tr><td class='header'>";
+		print "<table><tr><td class='bigger'>ASIC $showasc<br>";
+		print sprintf("%d", $ascs[$showasc]{'hashrate'}) . " Kh/s</td></tr>";
 		print "<tr><td>";
 		if (@ascmsg) {
 			print "<img src='/IFMI/error.png'><p>";
@@ -878,7 +882,7 @@ given(my $x) {
 		}
 		print "</td></tr></table>";
 
-		print "</td><td><div id='sumdata'><table>$asput</table></div></td></tr>";	
+		print "</td><td><div id='sumdata'><table>$asput</table></div></td></tr>";
 		print "<tr><td colspan=2>$agimg</td></tr></table>";
 		print "</div>";
 	}
@@ -891,7 +895,7 @@ given(my $x) {
         print "<table><tr><td class='bigger'>Pool $showpool<br>";
         my $psacc = ${$pools[$showpool]}{'accepted'};
         my $psrej = ${$pools[$showpool]}{'rejected'};
-		if ($psacc ne "0") { 
+		if ($psacc ne "0") {
  	      print sprintf("%.2f%%", $psrej / ($psacc + $psrej)*100) . "</td></tr><tr><td>";
           print "reject ratio";
 		} else {
@@ -923,7 +927,7 @@ given(my $x) {
 		if (($minerate ne "0") && ($minewu ne "0")) {
  	      print sprintf("%.1f%%", ($minewu / $minerate) / 10);
 		} else { print "0"; }
-		print "</td></tr><tr><td>Efficiency <br>(WU / Hashrate)</td></tr>"; 
+		print "</td></tr><tr><td>Efficiency <br>(WU / Hashrate)</td></tr>";
 		print "<tr><td>";
         if (@nodemsg) {
                 print "<img src='/IFMI/error.png'><p>";
@@ -936,11 +940,11 @@ given(my $x) {
                 print "All OK";
         }
         my $release = $conf{display}{smversion};
-   		print "</td></tr></table>";        
+   		print "</td></tr></table>";
         print "</td><td><table>$msput</td></tr>";
         print "<tr><td colspan=4><hr></td></tr>";
         print "<tr><td colspan=4>SeedManager v$release New releases are available at ";
-        print "<a href=https://github.com/starlilyth/Linux-SeedManager/releases target=_blank>GitHub</a>.<br>"; 
+        print "<a href=https://github.com/starlilyth/Linux-SeedManager/releases target=_blank>GitHub</a>.<br>";
         print "<b>If you love SeedManager, please consider donating. </b>Thank you!<br> ";
         print "BTC: <a href='bitcoin://1JBovQ1D3P4YdBntbmsu6F1CuZJGw9gnV6'><b>1JBovQ1D3P4YdBntbmsu6F1CuZJGw9gnV6</b></a> <br>LTC: <b>LdMJB36zEfTo7QLZyKDB55z9epgN78hhFb</b><br>";
         print "</table></td></tr></table>";
@@ -952,14 +956,14 @@ given(my $x) {
 	  if ($UHOH eq "true") {
 		print "<table><tr><td class=big><p>Uh Oh! No data could be retreived! Please check your configuration and try again.</p></td></tr></table>";
 	  } else {
-	    print $mcontrol;	
+	    print $mcontrol;
 	    print $p1sum;
 	    print $a1put if (defined $a1put);
 
 		print "<br></div>";
-		print "<div class=graphs>";	
+		print "<div class=graphs>";
 		print "<table>";
-		print "<tr><td align=left>";	
+		print "<tr><td align=left>";
 		my $img = "/var/www/IFMI/graphs/smsummary.png";
 		if (-e $img) {
 			print '<img src="/IFMI/graphs/smsummary.png">';
@@ -967,7 +971,7 @@ given(my $x) {
 			print "<font style='color: #999999; font-size: 10px;'>Summary graph not available yet.";
 		}
 		print "</td></tr></table>";
-		print "</div>";	
+		print "</div>";
 	  }
 	}
 }
