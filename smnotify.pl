@@ -22,18 +22,18 @@ my %conf = %{$conf};
 my $conffile = "/opt/ifmi/seedmanager.conf";
 my $miner_name = `hostname`;
 chomp $miner_name;
-my $nicget = `/sbin/ifconfig`; 
+my $nicget = `/sbin/ifconfig`;
 my $iptxt = "";
 while ($nicget =~ m/(\w\w\w\w?\d)\s.+\n\s+inet addr:(\d+\.\d+\.\d+\.\d+)\s/g) {
-  $iptxt = $2; 
+  $iptxt = $2;
 }
-my $now = POSIX::strftime("%m/%d at %H:%M", localtime());	
+my $now = POSIX::strftime("%m/%d at %H:%M", localtime());
 
 sub doEmail {
   my $emaildo = $conf{monitoring}{do_email};
   if ($emaildo == 1) {
 		my $msg = "";
-		my $ispriv = &CGMinerIsPriv; 
+		my $ispriv = &CGMinerIsPriv;
 		if ($ispriv ne "S") {
 			$msg .= "No miner data available - mining process may be stopped or hung!\n";
 		} else {
@@ -56,20 +56,20 @@ sub doEmail {
 					if (!(defined($conf{monitoring}{alert}{$ascid}{rejhi}))) {
 						$msg .= "$ascid reject rate is: $rr%. ";
 						$msg .= "Alert level is: $conf{monitoring}{monitor_reject_hi}%\n";
-						$conf{monitoring}{alert}{$ascid}{rejhi} = 1; 
+						$conf{monitoring}{alert}{$ascid}{rejhi} = 1;
 					}
 				} else {
 					if (defined($conf{monitoring}{alert}{$ascid}{rejhi})) {
 						$msg .= "$ascid reject rate is: $rr%. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$ascid}{rejhi}; 
+						delete $conf{monitoring}{alert}{$ascid}{rejhi};
 					}
 				}
 
 
-				my $ghashrate = $ascs[$i]{'hashrate'}; 
+				my $ghashrate = $ascs[$i]{'hashrate'};
 				$ghashrate = $ascs[$i]{'hashavg'} if ($ghashrate eq "");
-				if ($ghashrate < $conf{monitoring}{monitor_hash_lo}) { 
+				if ($ghashrate < $conf{monitoring}{monitor_hash_lo}) {
 					if (!(defined($conf{monitoring}{alert}{$ascid}{hashlo}))) {
 						$msg .= "$ascid hashrate is: $ghashrate Kh/s. ";
 						$msg .= "Alert level is: $conf{monitoring}{monitor_hash_lo}Kh/s\n";
@@ -79,52 +79,53 @@ sub doEmail {
 					if (defined($conf{monitoring}{alert}{$ascid}{hashlo})) {
 						$msg .= "$ascid hashrate is: $ghashrate Kh/s. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$ascid}{hashlo}; 
+						delete $conf{monitoring}{alert}{$ascid}{hashlo};
 					}
 				}
+
 				# stuff without settings
-				my $ghealth = $ascs[$i]{'status'}; 
+				my $ghealth = $ascs[$i]{'status'};
 		    	if ($ghealth ne "Alive") {
-						if (!(defined($conf{monitoring}{alert}{$ascid}{health}))) {		    		
+						if (!(defined($conf{monitoring}{alert}{$ascid}{health}))) {
 		    			$msg .= "$ascid health is: $ghealth.\n";
-			    		$conf{monitoring}{alert}{$ascid}{health} = 1; 
+			    		$conf{monitoring}{alert}{$ascid}{health} = 1;
 		    		}
 		    	} else {
-						if (defined($conf{monitoring}{alert}{$ascid}{health})) {		    		
+						if (defined($conf{monitoring}{alert}{$ascid}{health})) {
 		    			$msg .= "$ascid health is: $ghealth. ";
 							$msg .= "Alert has cleared.\n";
-							delete $conf{monitoring}{alert}{$ascid}{health}; 
+							delete $conf{monitoring}{alert}{$ascid}{health};
 						}
 		    	}
-		    my $ghwe = $ascs[$i]{'hardware_errors'};	
-				if ($ghwe > 0) { 
-					if (!(defined($conf{monitoring}{alert}{$ascid}{health}))) {		    		
+		    my $ghwe = $ascs[$i]{'hardware_errors'};
+				if ($ghwe > 0) {
+					if (!(defined($conf{monitoring}{alert}{$ascid}{hwerr}))) {
 						$msg .= "$ascid has $ghwe Hardware Errors.\n";
-						$conf{monitoring}{alert}{$ascid}{health} = 1; 
+						$conf{monitoring}{alert}{$ascid}{hwerr} = 1;
 					}
 				} else {
-					if (defined($conf{monitoring}{alert}{$ascid}{health})) {		    		
+					if (defined($conf{monitoring}{alert}{$ascid}{hwerr})) {
 						$msg .= "$ascid has $ghwe Hardware Errors. ";
 						$msg .= "Alert has cleared.\n";
-						delete $conf{monitoring}{alert}{$ascid}{health}; 
+						delete $conf{monitoring}{alert}{$ascid}{hwerr};
 					}
 				}
 			}
 			my @pools = &getCGMinerPools(1);
-			if (@pools) { 
+			if (@pools) {
 				for (my $i=0;$i<@pools;$i++) {
-					my $phealth = ${$pools[$i]}{'status'}; 
+					my $phealth = ${$pools[$i]}{'status'};
 	    		my $pname = ${$pools[$i]}{'url'};
 	    		my $shorturl = "";
   				if ($pname =~ m|://(\w+-?\w+\.)?(\w+-?\w+\.\w+:\d+)|) {
      					$shorturl = $2;
   				}
-					my $pactive = 0; 
+					my $pactive = 0;
 					for (my $g=0;$g<@ascs;$g++) {
 						if ($pname eq $ascs[$g]{'pool_url'}) {
 							$pactive++;
 						}
-					}						
+					}
 			   	my $poola; my $poolnum = 0;
 		      for (keys %{$conf{pools}}) {
 		      	if ($pname eq ${$conf}{pools}{$_}{url}) {
@@ -133,13 +134,13 @@ sub doEmail {
 		      	}
 		      }
 		      my $poolid = "pool$poolnum";
-					my $prr = "0"; 
-				  my $pacc = ${$pools[$i]}{'accepted'}; 
-				  my $prej = ${$pools[$i]}{'rejected'}; 
+					my $prr = "0";
+				  my $pacc = ${$pools[$i]}{'accepted'};
+				  my $prej = ${$pools[$i]}{'rejected'};
 				  if (defined $prej && $prej > 0) {
 				    $prr = sprintf("%.2f", $prej / ($pacc + $prej)*100);
 			    }
-			    my $prhl = ${$conf}{pools}{$poolnum}{pool_reject_hi}; 
+			    my $prhl = ${$conf}{pools}{$poolnum}{pool_reject_hi};
 					if ((defined $prej) && (defined $prhl) && ($prr > $prhl)) {
 						if (!(defined($conf{monitoring}{alert}{$poolid}{rejhi}))) {
 							$msg .= "Pool $i ($shorturl) reject rate is: $prr%. ";
@@ -150,16 +151,16 @@ sub doEmail {
 						if (defined($conf{monitoring}{alert}{$poolid}{rejhi})) {
 							$msg .= "Pool $i ($shorturl) reject rate is: $prr%. ";
 							$msg .= "Alert has cleared.\n";
-							delete $conf{monitoring}{alert}{$poolid}{rejhi}; 
+							delete $conf{monitoring}{alert}{$poolid}{rejhi};
 						}
 					}
 					my $pnotify = $conf{pools}{$poolnum}{pnotify};
 					if (($phealth ne "Alive") && ($pnotify == 1)) {
-						if (!(defined($conf{monitoring}{alert}{$poolid}{phealth}))) {						
+						if (!(defined($conf{monitoring}{alert}{$poolid}{phealth}))) {
 							$msg .= "Pool $i ($shorturl) health is $phealth.";
-							$conf{monitoring}{alert}{$poolid}{phealth} = 1; 
+							$conf{monitoring}{alert}{$poolid}{phealth} = 1;
 						}
-					} else { 
+					} else {
 						if (($phealth eq "Alive") && (defined($conf{monitoring}{alert}{$poolid}{phealth}))) {
 							$msg .= "Pool $i ($shorturl) health is $phealth. ";
 							$msg .= "Alert has cleared.\n";
@@ -168,11 +169,11 @@ sub doEmail {
 					}
 				}
 			}
-			DumpFile($conffile, $conf); 
+			DumpFile($conffile, $conf);
 		}
-		if ($msg ne "") { 
-			my $email = "Alerts for $miner_name ($iptxt) - $now\n";		
-			$email .= $msg; 
+		if ($msg ne "") {
+			my $email = "Alerts for $miner_name ($iptxt) - $now\n";
+			$email .= $msg;
 			my $subject = "Alerts for $miner_name ($iptxt) - $now";
 			&sendAnEmail($subject, $email);
 		}
@@ -183,8 +184,8 @@ sub sendAnEmail {
 	my ($subject,$message) = @_;
 	my $to = $conf{email}{smtp_to};
 	my $host = $conf{email}{smtp_host};
-	my $from = $conf{email}{smtp_from};		
-	my $port = $conf{email}{smtp_port};	
+	my $from = $conf{email}{smtp_from};
+	my $port = $conf{email}{smtp_port};
 	my $tls = $conf{email}{smtp_tls};
 	my $ssl = $conf{email}{smtp_ssl};
 	if ($subject eq "TEST") {
@@ -192,14 +193,14 @@ sub sendAnEmail {
 	}
 	if ($to ne "") {
 		my $helo = $miner_name . 'nohost.net';
-		#domain name picked entirely at random, and apparently perfect for the cause. 
+		#domain name picked entirely at random, and apparently perfect for the cause.
 		my $email = Email::Simple->create(
 		  header => [
 		   To      => $to,
 		   From    => $from,
-		   Subject => $subject,],	
+		   Subject => $subject,],
 		  body => $message,
-		);	
+		);
 		my $transport = "";
 		if ($tls == 1) {
 			$transport = Email::Sender::Transport::SMTP::TLS->new(
@@ -209,14 +210,14 @@ sub sendAnEmail {
 				username => $conf{email}{smtp_auth_user},
 				password => $conf{email}{smtp_auth_pass},
 			);
-		} elsif ($ssl == 1) {		
+		} elsif ($ssl == 1) {
 			$transport = Email::Sender::Transport::SMTP->new(
 				host => $host,
 				port => $port,
 				helo => $helo,
 				ssl => $ssl,
 				sasl_username => $conf{email}{smtp_auth_user},
-				sasl_password => $conf{email}{smtp_auth_pass},			
+				sasl_password => $conf{email}{smtp_auth_pass},
 			);
 		} else {
 			$transport = Email::Sender::Transport::SMTP->new(
@@ -226,7 +227,7 @@ sub sendAnEmail {
 			);
 		}
 
-		try { 
+		try {
 			sendmail($email, { transport => $transport });
 		} finally {
 			`/usr/bin/touch /tmp/smnotify.lastsent`;
